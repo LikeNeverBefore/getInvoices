@@ -1,0 +1,47 @@
+@import './reset';
+@import './colors';
+body {
+	font-family: 'Montserrat', sans-serif;
+	background-color: $mainColor;
+	font-size: 16px;
+}
+.module-one {
+	display: flex;
+	width: 100vw;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+}
+#submit {
+	padding: 20px 50px;
+	font-size: 25px;
+	background-color: $purple;
+	border-radius: 16px;
+	color: $mainColor;
+	border: none;
+	outline: none;
+}
+.form {
+	width: 50%;
+
+	form {
+		width: 80%;
+		margin: 0 auto;
+		label {
+			padding: 30px 0;
+			color: $gold;
+			font-size: 25px;
+			display: block;
+			text-align: center;
+		}
+		.area {
+			padding: 10px;
+			font-size: 20px;
+			margin: 0 auto;
+			width: 90%;
+			height: 40vh;
+			display: block;
+			resize: vertical;
+		}
+	}
+}
