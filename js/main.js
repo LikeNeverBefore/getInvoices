@@ -2,33 +2,30 @@ const inputArea = document.querySelector('#input');
 const outputArea = document.querySelector('#output');
 const submitButton = document.querySelector('#submit');
 const outputLabel = document.querySelector('#outputlabel');
-
-let userInput = '';
+const regex = /\d{10}/;
 
 function submitButtonHandler() {
-	userInput = inputArea.value.split(' ');
-	console.log(userInput);
-	outputArea.value = userInput.filter(filterArray);
-	outputLabel.textContent = 'Output: ' + userInput.filter(filterArray).length + ' invoices';
-}
+	const final = [];
+	let text = inputArea.value.split(' ');
+	text = text.join();
+	text = text.split('\n');
+	text = text.join();
+	text = text.split(',');
 
-let dummyText =
-	'4123456787 due date 30-01-2023 4123452787 due date 30-01-2023 4123456787 due date 30-01-2023 4023456787 due date 30-01-2023 4123452387 due date 30-01-2023 4123456487 due date 30-01-2023 4123956787 due date 30-01-2023 4123400787 due date 30-01-2023 ';
-inputArea.value = dummyText;
-const outputDummy = dummyText.split(' ');
-
-function filterArray(item) {
-	if (item.length == 10) {
-		if ((item > 3700000000) & (item < 4900000000)) {
-			return true;
+	text.forEach(element => {
+		if (regex.test(element)) {
+			final.push(element);
 		}
-	} else {
-		return false;
+	});
+	for (let i = 0; i < final.length; i++) {
+		final[i] = final[i].replace(/\D/g, '');
 	}
-}
 
-console.log(outputDummy.filter(filterArray));
+	const unique = [...new Set(final)];
+	outputArea.value = ' ';
+	outputArea.value = unique;
+
+	outputLabel.textContent = 'Output: ' + unique.length + ' invoices';
+}
 
 submitButton.addEventListener('click', submitButtonHandler);
-
-//
