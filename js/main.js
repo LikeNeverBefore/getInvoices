@@ -7,8 +7,11 @@ const regex = /\d{10}/;
 function submitButtonHandler() {
 	const final = [];
 	let text = inputArea.value.split(' ');
+
 	text = text.join();
 	text = text.split('\n');
+	text = text.join();
+	text = text.split('\t');
 	text = text.join();
 	text = text.split(',');
 
