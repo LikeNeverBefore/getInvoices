@@ -23,6 +23,13 @@ function submitButtonHandler() {
 	for (let i = 0; i < final.length; i++) {
 		final[i] = final[i].replace(/\D/g, '');
 	}
+	for (let i = 0; i < final.length; i++) {
+		if (final[i] < 3600000000) {
+			final.splice(i, 1);
+		} else if (final[i] > 5100000000) {
+			final.splice(i, 1);
+		}
+	}
 
 	const unique = [...new Set(final)];
 	outputArea.value = ' ';
