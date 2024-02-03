@@ -4,42 +4,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code&family=Open+Sans&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./css/style.css">
     <title>Document</title>
 </head>
 
 <body>
-    <div class="module-one">
-        <div class="form">
-            <form action="">
-                <label for="textarea">Paste Remittance Details</label>
-                <textarea id="input" class="area" name="" id="" cols="50" rows="20"></textarea>
-            </form>
+    <nav class="nav">
+        <div class="navbox">
+            <a class="active" href="#convert">Convert remittance</a>
+            <a href="#missing">Find missing invoice</a>
+            <a href="#values">Sum invoice values</a>
         </div>
-        <button id="submit">Submit</button>
-        <div class="form">
-            <form action="">
-                <label id="outputlabel" for="output">Output</label>
-                <textarea id="output" class="area" name="" id="" cols="50" rows="20"></textarea>
-            </form>
+    </nav>
+    <div class="modules">
+        <h1 class="module-title">Convert Remittance to list of Invoices</h1>
+        <div class="module" id="convert">
+            <div class="wrap">
+                <div class="form">
+                    <h3>Paste Remittance Details</h3>
+                    <textarea id="input" spellcheck="false" class="area inputarea"></textarea>
+                </div>
+                <div class="form">
+                    <h3 id="outputlabel">Output</h3>
+                    <textarea readonly id="output" class="area outputarea"></textarea>
+                </div>
+            </div>
+            <button id="submit">Convert ✓</button>
         </div>
-    </div>
-    <div class="module-one">
-        <div class="form">
-            <form action="">
-                <label for="textarea2">Paste Remittance Details</label>
-                <textarea id="input2" class="area2"></textarea>
-                <textarea id="input3" class="area2"></textarea>
-            </form>
+        <div class="module" id="missing">
+            <div class="wrap">
+                <div class="form">
+
+                    <h3>Paste Remittance Details</h3>
+                    <textarea id="input2" class="area2 inputarea"></textarea>
+                    <h3>Paste second</h3>
+                    <textarea id="input3" class="area2 inputarea"></textarea>
+
+                </div>
+                <div class="form">
+                    <h3>Output</h3>
+                    <textarea readonly id="output2" class="area outputarea"></textarea>
+                </div>
+            </div>
+            <button id="submit2">Convert ✓</button>
         </div>
-        <button id="submit2">Submit</button>
-        <div class="form">
-            <form action="">
-                <label id="outputlabel2" for="output">Output</label>
-                <textarea id="output2" class="area2" name="" id="" cols="50" rows="20"></textarea>
-            </form>
+        <div class="module" id="values">
+            <div class="wrap">
+                <div class="form">
+                    <h3>Paste Invoice list</h3>
+                    <textarea id="input4" class="area inputarea"></textarea>
+                </div>
+                <div class="form">
+                    <h3 id="sumoutput">Output</h3>
+                    <textarea readonly id="output3" class="area outputarea"></textarea>
+                </div>
+            </div>
+            <button id="submit3">Convert ✓</button>
         </div>
     </div>
     <script src="./js/main.js"></script>
