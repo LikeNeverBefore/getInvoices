@@ -2,14 +2,20 @@ const inputArea = document.querySelector('#input');
 const inputAreaDup = document.querySelector('#input2');
 const inputAreaDupDup = document.querySelector('#input3');
 const inputForSum = document.querySelector('#input4');
+const inputAreaOverdue = document.querySelector('#input5');
 const outputArea = document.querySelector('#output');
 const outputAreaDup = document.querySelector('#output2');
 const outputForSum = document.querySelector('#output3');
+const outputAreaOverdue = document.querySelector('#output4');
 const submitButton = document.querySelector('#submit');
 const submitButton2 = document.querySelector('#submit2');
 const submitButton3 = document.querySelector('#submit3');
+const submitButton4 = document.querySelector('#submit4');
 const outputLabel = document.querySelector('#outputlabel');
 const sumOutput = document.querySelector('#sumoutput');
+let currency = document.querySelector('.currency');
+const nav = document.querySelectorAll('a');
+const activePage = window.location.pathname;
 const regex = /\d{10}/;
 let dup = 0;
 
@@ -59,19 +65,13 @@ function submitButtonHandler() {
 	let unique = convertInputToInvoices(inputArea, outputArea);
 	outputArea.value = convertInputToInvoices(inputArea, outputArea);
 	let duplicates = dup - unique.length;
-	outputLabel.textContent =
-		'Output: ' +
-		unique.length +
-		' invoices (' +
-		duplicates +
-		' duplicates removed)';
+	outputLabel.textContent = 'Output: ' + unique.length + ' invoices (' + duplicates + ' duplicates removed)';
 	inputAreaDup.textContent = outputArea.value;
 }
 function findMissing() {
 	let more;
 	let less;
 	let missing = [];
-
 
 	if (inputAreaDup.value.length > inputAreaDupDup.value.length) {
 		more = inputAreaDup.value;
@@ -151,8 +151,91 @@ function sumInvoices() {
 	sumOutput.textContent = 'Sum: ' + sum.toFixed(2);
 }
 
+nav.forEach(element => {
+	element.addEventListener('click', () => {
+		nav.forEach(element => {
+			element.classList.remove('active');
+		});
+		element.classList.toggle('active');
+	});
+});
+
+//scrollspy
+
+(function () {
+	'use strict';
+
+	var section = document.querySelectorAll('.module');
+	var sections = {};
+	var i = 0;
+
+	Array.prototype.forEach.call(section, function (e) {
+		sections[e.id] = e.offsetTop;
+	});
+
+	window.onscroll = function () {
+		var scrollPosition = document.documentElement.scrollTop || document.body.scrollTop;
+
+		for (i in sections) {
+			if (sections[i] <= scrollPosition + 100) {
+				document.querySelector('.active').setAttribute('class', ' ');
+				document.querySelector('a[href*=' + i + ']').setAttribute('class', 'active');
+			}
+		}
+	};
+})();
+
+function getOverdue() {
+	outputAreaOverdue.value = 'However please note that the following invoices in your account are currently overdue:\n';
+	console.log(inputAreaOverdue.value);
+	let text = inputAreaOverdue.value.split('\n');
+	console.log(text[0].split(' '));
+	let invoicelist = [];
+
+	class Invoice {
+		constructor(invoiceNumber, dueDate, daysOverdue, totalAmount, openAmount) {
+			this.invoiceNumber = invoiceNumber;
+			this.dueDate = dueDate;
+			this.daysOverdue = daysOverdue;
+			this.totalAmount = totalAmount;
+			this.openAmount = openAmount;
+		}
+	}
+	text.forEach(element => {
+		let invoice = element.split(' ');
+
+		invoicelist.push(
+			new Invoice(
+				invoice[0],
+				invoice[invoice.length - 5],
+				invoice[invoice.length - 4],
+				invoice[invoice.length - 2],
+				invoice[invoice.length - 1]
+			)
+		);
+	});
+
+	let overdue = [];
+	invoicelist.forEach(element => {
+		if (element.daysOverdue > 6) {
+			overdue.push(element);
+		}
+	});
+
+	overdue.forEach(element => {
+		if (element.totalAmount === element.openAmount) {
+			outputAreaOverdue.value += `${element.invoiceNumber} due date ${element.dueDate}\n`;
+		} else {
+			outputAreaOverdue.value += `${element.invoiceNumber} underpaid in the amount of ${element.openAmount} ${currency.value} \n`;
+		}
+	});
+
+	console.log(overdue);
+}
+
 submitButton.addEventListener('click', submitButtonHandler);
 submitButton2.addEventListener('click', convertBoth);
 submitButton3.addEventListener('click', sumInvoices);
+submitButton4.addEventListener('click', getOverdue);
 outputArea.addEventListener('click', copyToClipboard);
 outputAreaDup.addEventListener('click', copyToClipboardTwo);

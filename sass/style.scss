@@ -19,6 +19,8 @@ body {
 	position: fixed;
 	top: 50%;
 	transform: translateY(-50%);
+	width: calc(100vw * 0.13);
+	overflow: hidden;
 }
 .navbox {
 	display: flex;
@@ -39,9 +41,10 @@ body {
 		border-radius: 20px;
 		text-decoration: none;
 		color: #000;
-		font-size: 2rem;
+		font-size: 1.8rem;
 		display: inline-block;
 		transition: color 0.3s, background-color 0.3s;
+		overflow: hidden;
 		&:hover {
 			background-color: gainsboro;
 			color: #000;
@@ -80,6 +83,18 @@ body {
 				font-size: 2rem;
 				padding: 0 20px;
 				background-color: $blue;
+				.currency {
+					margin-left: 10px;
+					color: $blue;
+					display: inline;
+					height: 30px;
+					line-height: 25px;
+					width: 60px;
+					text-align: center;
+					font-family: 'Open Sans', sans-serif;
+					font-weight: bold;
+					font-size: 2rem;
+				}
 			}
 			textarea {
 				width: 100%;
