@@ -20,6 +20,7 @@
         <a href="#missing">Find missing invoice</a>
         <a href="#values">Sum invoice values</a>
         <a href="#overdue">Overdue invoices</a>
+        <a href="#matching">Matching</a>
       </div>
     </nav>
     <div class="modules">
@@ -106,6 +107,26 @@
           </div>
         </div>
         <button id="btnOverdueInvoices">Convert ✓</button>
+      </div>
+      <div class="module" id="matching">
+        <div class="wrap">
+          <div class="form">
+            <h3>Paste Invoice list:</h3>
+            <textarea id="inputMatching" class="area2 inputarea"></textarea>
+            <h3>Paste second</h3>
+            <textarea id="inputMatchingTwo" class="area2 inputarea"></textarea>
+          </div>
+          <div class="form">
+            <h3 id="">Output</h3>
+            <textarea
+              readonly
+              id="outputMatching"
+              class="area outputarea"
+            ></textarea>
+          </div>
+        </div>
+        <button id="btnMatching">Convert ✓</button>
+        <button id="btnMatchingTwo">Calc ✓</button>
       </div>
     </div>
     <script src="./js/main.js"></script>
