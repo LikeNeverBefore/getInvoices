@@ -1,206 +1,255 @@
-const inputArea = document.querySelector("#input");
-const inputAreaDup = document.querySelector("#input2");
-const inputAreaDupDup = document.querySelector("#input3");
-const inputForSum = document.querySelector("#input4");
-const inputAreaOverdue = document.querySelector("#input5");
-const outputArea = document.querySelector("#output");
-const outputAreaDup = document.querySelector("#output2");
-const outputForSum = document.querySelector("#output3");
-const outputAreaOverdue = document.querySelector("#output4");
-const submitButton = document.querySelector("#submit");
-const submitButton2 = document.querySelector("#submit2");
-const submitButton3 = document.querySelector("#submit3");
-const submitButton4 = document.querySelector("#submit4");
-const outputLabel = document.querySelector("#outputlabel");
+// Module for finding invoice numbers from raw text
+const findInvoicesInput = document.querySelector("#findInvoicesInput");
+const findInvoicesOutput = document.querySelector("#findInvoicesOutput");
+const findInvoicesBtn = document.querySelector("#findInvoicesBtn");
+const findInvoicesLabel = document.querySelector("#findInvoicesLabel");
+let duplicateInvoices = 0;
+
+// Module for finding missing invoices (located on different account)
+const findMissingInputOne = document.querySelector("#findMissingInputOne");
+const findMissingInputTwo = document.querySelector("#findMissingInputTwo");
+const findMissingOutput = document.querySelector("#findMissingOutput");
+const findMissingBtn = document.querySelector("#findMissingBtn");
+
+// Module for formatting invoices and returning the sum
+const inputSumInvoices = document.querySelector("#inputSumInvoices");
+const outputSumInvoices = document.querySelector("#outputSumInvoices");
+const btnSumInvoices = document.querySelector("#btnSumInvoices");
 const sumOutput = document.querySelector("#sumoutput");
+
+// Module for generating an overdue reminder
+const inputOverdueInvoices = document.querySelector("#inputOverdueInvoices");
+const outputOverdueInvoices = document.querySelector("#outputOverdueInvoices");
+const btnOverdueInvoices = document.querySelector("#btnOverdueInvoices");
+
+// DOM manipulation + scrollspy
 const nav = document.querySelectorAll("a");
 const activePage = window.location.pathname;
-const regex = /\d{10}/;
-let dup = 0;
+
+// Function accesses the text entered by user
+// It does some text manipulation splitting the entered text by - space, new line, tabulator, comma - and stores the result in an userInput array
+// Then it check every element in userInput array and transfers every number that's exactly 10 digit long to foundNumbers array
+// Then the additional check is pushing every number from range of 3600000000 - 5100000000 to foundInvoices array
+// Finally the invoices are then transferred to uniqueInvoices Set to remove any potential duplicates
 
 function convertInputToInvoices(input, output) {
-  const regex = /\d{10}/;
-  const final = [];
-  let text = input.value.split(" ");
+  const regex = /\d{10}/; // Regex to only accept numbers that are exactly 10 digits long
+  const foundNumbers = [];
+  const foundInvoices = [];
 
-  text = text.join();
-  text = text.split("\n");
-  text = text.join();
-  text = text.split("\t");
-  text = text.join();
-  text = text.split(",");
+  let userInput = input.value.split(" ");
+  userInput = userInput.join();
+  userInput = userInput.split("\n");
+  userInput = userInput.join();
+  userInput = userInput.split("\t");
+  userInput = userInput.join();
+  userInput = userInput.split(",");
 
-  text.forEach((element) => {
+  // Loop to push 10 digit numbers to foundNumbers
+  userInput.forEach((element) => {
     if (regex.test(element)) {
-      final.push(element);
+      foundNumbers.push(element);
     }
   });
 
-  for (let i = 0; i < final.length; i++) {
-    final[i] = final[i].replace(/\D/g, "");
-  }
-  for (let i = 0; i < final.length; i++) {
-    if (final[i] < 3600000000) {
-      final.splice(i, 1);
-    } else if (final[i] > 5100000000) {
-      final.splice(i, 1);
+  // Loop to push numbers from range of 3600000000 - 5100000000 to foundInvoices array
+  for (let i = 0; i < foundNumbers.length; i++) {
+    if (foundNumbers[i] > 3600000000 && foundNumbers[i] < 5100000000) {
+      foundInvoices.push(foundNumbers[i]);
     }
   }
 
-  const unique = [...new Set(final)];
-  // outputArea.value = ' ';
+  // Creating new Set from foundInvoices to remove duplicates
+  const uniqueInvoices = [...new Set(foundInvoices)];
 
-  for (let i = 1; i < unique.length; i++) {
-    unique[i] = " " + unique[i];
+  // Some text manipulation to include a space after every invoice starting from the second one - just for formatting purposes.
+  for (let i = 1; i < uniqueInvoices.length; i++) {
+    uniqueInvoices[i] = " " + uniqueInvoices[i];
   }
-  output.value = unique;
-  dup = final.length;
 
-  return unique;
+  // Pasting the final invoice list to the output field
+  output.value = uniqueInvoices;
+  duplicateInvoices = foundInvoices.length;
+
+  return uniqueInvoices;
 }
 
-function submitButtonHandler() {
-  convertInputToInvoices(inputArea, outputArea);
-  let unique = convertInputToInvoices(inputArea, outputArea);
-  outputArea.value = convertInputToInvoices(inputArea, outputArea);
-  let duplicates = dup - unique.length;
-  outputLabel.textContent =
+// Function attached to button handler that runs convertInputToInvoices(findInvoicesInput, findInvoicesOutput) and manipulates label to contain the information on number of found invoices and possible duplicates
+function findInvoicesBtnHandler() {
+  let unique = convertInputToInvoices(findInvoicesInput, findInvoicesOutput);
+  findInvoicesLabel.textContent =
     "Output: " +
     unique.length +
     " invoices (" +
-    duplicates +
+    (duplicateInvoices - unique.length) +
     " duplicates removed)";
-  inputAreaDup.textContent = outputArea.value;
+  findMissingInputOne.textContent = findInvoicesOutput.value;
 }
-function findMissing() {
-  let more;
-  let less;
-  let missing = [];
 
-  if (inputAreaDup.value.length > inputAreaDupDup.value.length) {
-    more = inputAreaDup.value;
-    less = inputAreaDupDup.value;
+// Function that checks which input have more invoices, then finds the values that only appear once and pushes them to missingInvoices array
+function findMissing() {
+  let longerArray;
+  let shorterArray;
+  let missingInvoices = [];
+
+  if (findMissingInputOne.value.length > findMissingInputTwo.value.length) {
+    longerArray = findMissingInputOne.value;
+    shorterArray = findMissingInputTwo.value;
   } else {
-    more = inputAreaDupDup.value;
-    less = inputAreaDup.value;
+    longerArray = findMissingInputTwo.value;
+    shorterArray = findMissingInputOne.value;
   }
 
-  more = more.split(" ");
-  more = more.join();
-  more = more.split(",");
-  less = less.split(" ");
-  less = less.join();
-  less = less.split(",");
-  more.forEach((element) => {
-    if (!less.includes(element)) {
-      missing.push(element);
+  longerArray = longerArray.split(" ");
+  longerArray = longerArray.join();
+  longerArray = longerArray.split(",");
+
+  shorterArray = shorterArray.split(" ");
+  shorterArray = shorterArray.join();
+  shorterArray = shorterArray.split(",");
+
+  longerArray.forEach((element) => {
+    if (!shorterArray.includes(element)) {
+      missingInvoices.push(element);
     }
   });
-  for (let i = 1; i < missing.length; i++) {
-    missing[i] = " " + missing[i];
+
+  // Some text manipulation to include a space after every invoice starting from the second one - just for formatting purposes.
+  for (let i = 1; i < missingInvoices.length; i++) {
+    missingInvoices[i] = " " + missingInvoices[i];
   }
 
-  outputAreaDup.value = missing;
+  findMissingOutput.value = missingInvoices;
 }
 
 function copyToClipboard() {
-  outputArea.classList.add("copyanimation");
-  navigator.clipboard.writeText(outputArea.value);
+  findInvoicesOutput.classList.add("copyanimation");
+  navigator.clipboard.writeText(findInvoicesOutput.value);
   setTimeout(() => {
-    outputArea.classList.remove("copyanimation");
-  }, 1000);
-}
-function copyToClipboardTwo() {
-  outputAreaDup.classList.add("copyanimation");
-  navigator.clipboard.writeText(outputAreaDup.value);
-  setTimeout(() => {
-    outputAreaDup.classList.remove("copyanimation");
+    findInvoicesOutput.classList.remove("copyanimation");
   }, 1000);
 }
 
+function copyToClipboardTwo() {
+  findMissingOutput.classList.add("copyanimation");
+  navigator.clipboard.writeText(findMissingOutput.value);
+  setTimeout(() => {
+    findMissingOutput.classList.remove("copyanimation");
+  }, 1000);
+}
+
+// Runs convertInputToInvoices on both input fields and then runs findMissing
 function convertBoth() {
-  convertInputToInvoices(inputAreaDup, inputAreaDup);
-  convertInputToInvoices(inputAreaDupDup, inputAreaDupDup);
+  convertInputToInvoices(findMissingInputOne, findMissingInputOne);
+  convertInputToInvoices(findMissingInputTwo, findMissingInputTwo);
   findMissing();
 }
 
+// Function that does text manipulation to populate the invoice based on class constructor
+// Then it calculates days past due and sum for each currency code
 function sumInvoices() {
-  outputForSum.textContent = "";
-  let sum = 0;
-  const inv = [];
-  let text = inputForSum.value.split("\n");
-  const findPaid = (element) => element === "paid";
-  let indexOfPaid = text.findIndex(findPaid);
+  const invoices = [];
+  const currencySet = new Set([]);
+  let userInput = inputSumInvoices.value.split("\n");
+
   class Invoices {
     constructor(
-      number,
+      invoiceNumber,
       invoiceDate,
-      due,
+      dueDate,
       totalAmount,
-      amount,
+      openAmount,
       currency,
       daysPastDue
     ) {
-      this.number = number;
+      this.invoiceNumber = invoiceNumber;
       this.invoiceDate = invoiceDate;
-      this.due = due;
+      this.dueDate = dueDate;
       this.totalAmount = totalAmount;
-      this.amount = amount;
+      this.openAmount = openAmount;
       this.currency = currency;
       this.daysPastDue = daysPastDue;
     }
   }
 
-  while (text.includes("paid")) {
-    let a = text.splice(0, indexOfPaid + 1);
-    let ccode = a[a.length - 2].substring(a[a.length - 2].length - 3);
-    let curr = a[a.length - 2];
-    curr = curr.substring(0, curr.length - 4);
-    curr = parseFloat(curr.replace(/,/g, ""));
+  while (userInput.includes("paid")) {
+    const findPaid = (element) => element === "paid";
+    let indexOfPaid = userInput.findIndex(findPaid);
+    let invoiceArray = userInput.splice(0, indexOfPaid + 1);
 
-    let invoiceDate = [...a[a.length - 5].split("\t")];
+    // invoice number
+    let invoiceNumber = invoiceArray[0];
 
+    // invoice date
+    let invoiceDate = [...invoiceArray[invoiceArray.length - 5].split("\t")];
     invoiceDate = invoiceDate[invoiceDate.length - 2];
-    ccode = a[a.length - 2].substring(a[a.length - 2].length - 3);
 
-    let date = new Date(a[a.length - 4]);
-    let today = new Date();
-    due = (date - today) / 1000 / 60 / 60 / 24;
-    due = parseInt(due);
+    // invoice due date
+    let dueDate = invoiceArray[invoiceArray.length - 4];
 
-    let invoiceAmount = a[a.length - 3];
+    // invoice total amount
+    let invoiceAmount = invoiceArray[invoiceArray.length - 3];
     invoiceAmount = invoiceAmount.substring(0, invoiceAmount.length - 4);
-    invoiceAmount = parseFloat(invoiceAmount.replace(/,/g, ""));
+    invoiceAmount = parseFloat(invoiceAmount.replace(/,/g, "")).toFixed(2);
+    invoiceAmount = parseFloat(invoiceAmount);
+
+    // invoice open amount
+    let openAmount = invoiceArray[invoiceArray.length - 2];
+    openAmount = openAmount.substring(0, openAmount.length - 4);
+    openAmount = parseFloat(openAmount.replace(/,/g, ""));
+
+    // currency code
+    let currency = invoiceArray[invoiceArray.length - 2].substring(
+      invoiceArray[invoiceArray.length - 2].length - 3
+    );
+
+    // list of currencies
+    currencySet.add(currency);
+
+    // calculating days past due
+    let issueDateFull = new Date(dueDate);
+    let today = new Date();
+    let daysPastDue = (today - issueDateFull) / 1000 / 60 / 60 / 24;
+    daysPastDue = parseInt(daysPastDue);
 
     let invoice = new Invoices(
-      a[0],
+      invoiceNumber,
       invoiceDate,
-      a[a.length - 4],
+      dueDate,
       invoiceAmount,
-      curr,
-      ccode,
-      due
+      openAmount,
+      currency,
+      daysPastDue
     );
-    inv.push(invoice);
-    indexOfPaid = text.findIndex(findPaid);
+    invoices.push(invoice);
   }
 
-  sum = 0;
-  inv.forEach((element) => {
-    outputForSum.textContent +=
-      element.number +
-      " due date: " +
-      element.due +
-      " open in the amount of " +
-      element.amount +
-      " " +
-      element.currency +
-      " \n";
-    sum += element.amount;
-  });
+  // Generating input for both label and output field
 
-  sumOutput.textContent = "Sum: " + sum.toFixed(2);
+  sumOutput.textContent = "Sum |  ";
+  outputSumInvoices.textContent = "";
+  currencySet.forEach((element) => {
+    currencyCode = element;
+    let currencySum = 0;
+    invoices.forEach((element) => {
+      if (element.currency == currencyCode) {
+        outputSumInvoices.textContent +=
+          element.invoiceNumber +
+          " due date: " +
+          element.dueDate +
+          " open in the amount of " +
+          element.openAmount.toFixed(2) +
+          " " +
+          element.currency +
+          " \n";
+        currencySum += element.openAmount;
+      }
+    });
+    sumOutput.textContent += +currencySum.toFixed(2) + " " + element + " | ";
+  });
 }
+
+// nav handling + scrollspy
 
 nav.forEach((element) => {
   element.addEventListener("click", () => {
@@ -210,8 +259,6 @@ nav.forEach((element) => {
     element.classList.toggle("active");
   });
 });
-
-//scrollspy
 
 (function () {
   "use strict";
@@ -239,93 +286,171 @@ nav.forEach((element) => {
   };
 })();
 
+// Function that does text manipulation to populate the invoice based on class constructor
+// Then it calculates days past due obtaining invoice status and dispute status
+// Based on the following conditions it generates an output
+// If the invoice is >7 days overdue the status is different then skippedStatuses and the dispute is not active or pending then the invoice is pushed to overdue array
+// From overdue array - if the invoice is partially paid the the output says invoiceNumber remains open in the amount of openAmount else it shows invoiceNumber due date dueDate
+
 function getOverdue() {
-  let sum = 0;
-  const inv = [];
-  let text = inputAreaOverdue.value.split("\n");
-  const findPaid = (element) => element === "paid";
-  let indexOfPaid = text.findIndex(findPaid);
+  const invoices = [];
+  let userInput = inputOverdueInvoices.value.split("\n");
+
   class Invoices {
     constructor(
-      number,
+      invoiceNumber,
       invoiceDate,
-      due,
+      dueDate,
       totalAmount,
-      amount,
+      openAmount,
       currency,
-      daysPastDue
+      daysPastDue,
+      status,
+      disputed
     ) {
-      this.number = number;
+      this.invoiceNumber = invoiceNumber;
       this.invoiceDate = invoiceDate;
-      this.due = due;
+      this.dueDate = dueDate;
       this.totalAmount = totalAmount;
-      this.amount = amount;
+      this.openAmount = openAmount;
       this.currency = currency;
       this.daysPastDue = daysPastDue;
+      this.status = status;
+      this.disputed = disputed;
     }
   }
 
-  while (text.includes("paid")) {
-    let a = text.splice(0, indexOfPaid + 1);
-    let ccode = a[a.length - 2].substring(a[a.length - 2].length - 3);
-    let curr = a[a.length - 2];
-    curr = curr.substring(0, curr.length - 4);
-    curr = parseFloat(curr.replace(/,/g, ""));
+  while (userInput.includes("paid")) {
+    const findPaid = (element) => element === "paid";
+    let indexOfPaid = userInput.findIndex(findPaid);
+    let invoiceArray = userInput.splice(0, indexOfPaid + 1);
 
-    let invoiceDate = [...a[a.length - 5].split("\t")];
+    // invoice number
+    let invoiceNumber = invoiceArray[0];
 
+    // invoice date
+    let invoiceDate = [...invoiceArray[invoiceArray.length - 5].split("\t")];
     invoiceDate = invoiceDate[invoiceDate.length - 2];
-    ccode = a[a.length - 2].substring(a[a.length - 2].length - 3);
 
-    let date = new Date(a[a.length - 4]);
-    let today = new Date();
-    due = (date - today) / 1000 / 60 / 60 / 24;
-    due = parseInt(due);
+    // invoice due date
+    let dueDate = invoiceArray[invoiceArray.length - 4];
 
-    let invoiceAmount = a[a.length - 3];
+    // invoice total amount
+    let invoiceAmount = invoiceArray[invoiceArray.length - 3];
     invoiceAmount = invoiceAmount.substring(0, invoiceAmount.length - 4);
-    invoiceAmount = parseFloat(invoiceAmount.replace(/,/g, ""));
+    invoiceAmount = parseFloat(invoiceAmount.replace(/,/g, "")).toFixed(2);
+    invoiceAmount = parseFloat(invoiceAmount);
+
+    // invoice open amount
+    let openAmount = invoiceArray[invoiceArray.length - 2];
+    openAmount = openAmount.substring(0, openAmount.length - 4);
+    openAmount = parseFloat(openAmount.replace(/,/g, ""));
+
+    // currency code
+    let currency = invoiceArray[invoiceArray.length - 2].substring(
+      invoiceArray[invoiceArray.length - 2].length - 3
+    );
+
+    // calculating days past due
+    let issueDateFull = new Date(dueDate);
+    let today = new Date();
+    let daysPastDue = (today - issueDateFull) / 1000 / 60 / 60 / 24;
+    daysPastDue = parseInt(daysPastDue);
+
+    // obtaining invoice status
+    const findEdit = (element) => element === "edit";
+    let indexOfEdit;
+    indexOfEdit = invoiceArray.findIndex(findEdit);
+    let status;
+    if (
+      invoiceArray[indexOfEdit - 1] == "Disputed" ||
+      invoiceArray[indexOfEdit - 1] == "Proof Of Payment" ||
+      invoiceArray[indexOfEdit - 1] == "Promise To Pay" ||
+      invoiceArray[indexOfEdit - 1] == "Unpaid Agency" ||
+      invoiceArray[indexOfEdit - 1] == "Received Not Applied" ||
+      invoiceArray[indexOfEdit - 1] == "On Payment Plan" ||
+      invoiceArray[indexOfEdit - 1] == "Credit Issue" ||
+      invoiceArray[indexOfEdit - 1] == "In Query" ||
+      invoiceArray[indexOfEdit - 1] == "Withholding Tax" ||
+      invoiceArray[indexOfEdit - 1] == "Uncollectible" ||
+      invoiceArray[indexOfEdit - 1] == "In Serasa" ||
+      invoiceArray[indexOfEdit - 1] == "Deferred Payment Agreed" ||
+      invoiceArray[indexOfEdit - 1] == "Deduction Pending"
+    ) {
+      status = invoiceArray[indexOfEdit - 1];
+    } else {
+      status = "None";
+    }
+
+    // obtaining dispute status
+    let disputed;
+    if (invoiceArray[indexOfEdit + 1] == "Active") {
+      disputed = "Active";
+    } else if (invoiceArray[indexOfEdit + 1] == "Pending") {
+      disputed = "Pending";
+    } else {
+      disputed = "None";
+    }
 
     let invoice = new Invoices(
-      a[0],
+      invoiceNumber,
       invoiceDate,
-      a[a.length - 4],
+      dueDate,
       invoiceAmount,
-      curr,
-      ccode,
-      due
+      openAmount,
+      currency,
+      daysPastDue,
+      status,
+      disputed
     );
-    inv.push(invoice);
-    indexOfPaid = text.findIndex(findPaid);
+    invoices.push(invoice);
+    indexOfPaid = invoiceArray.findIndex(findPaid);
   }
 
   const overdue = [];
 
-  inv.forEach((element) => {
-    if (element.daysPastDue < -7) {
+  invoices.forEach((element) => {
+    const skippedStatuses = [
+      "Disputed",
+      "Proof Of Payment",
+      "Unpaid Agency",
+      "Received Not Applied",
+      "On Payment Plan",
+      "Credit Issue",
+      "Withholding Tax",
+      "Uncollectible",
+      "In Serasa",
+      "Deferred Payment Agreed",
+      "Deduction Pending",
+    ];
+    if (
+      element.daysPastDue > 7 &&
+      !skippedStatuses.includes(element.status) &&
+      element.disputed == "None"
+    ) {
       overdue.push(element);
     }
   });
 
-  outputAreaOverdue.value =
+  outputOverdueInvoices.value =
     "However please note that the following invoices in your account are currently overdue: \n";
-
   overdue.forEach((element) => {
-    if (element.amount == element.totalAmount) {
-      outputAreaOverdue.value += `${element.number} due date ${element.due}\n`;
+    if (element.openAmount == element.totalAmount) {
+      outputOverdueInvoices.value += `${element.invoiceNumber} due date ${element.dueDate}\n`;
     } else {
-      outputAreaOverdue.value += `${
-        element.number
-      } underpaid in the amount of ${element.amount.toFixed(2)} ${
+      outputOverdueInvoices.value += `${
+        element.invoiceNumber
+      } underpaid in the amount of ${element.openAmount.toFixed(2)} ${
         element.currency
       } \n`;
     }
   });
 }
 
-submitButton.addEventListener("click", submitButtonHandler);
-submitButton2.addEventListener("click", convertBoth);
-submitButton3.addEventListener("click", sumInvoices);
-submitButton4.addEventListener("click", getOverdue);
-outputArea.addEventListener("click", copyToClipboard);
-outputAreaDup.addEventListener("click", copyToClipboardTwo);
+// Button handlers
+findInvoicesBtn.addEventListener("click", findInvoicesBtnHandler);
+findMissingBtn.addEventListener("click", convertBoth);
+btnSumInvoices.addEventListener("click", sumInvoices);
+btnOverdueInvoices.addEventListener("click", getOverdue);
+findInvoicesOutput.addEventListener("click", copyToClipboard);
+findMissingOutput.addEventListener("click", copyToClipboardTwo);
