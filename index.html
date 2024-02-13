@@ -1,86 +1,113 @@
 <!DOCTYPE html>
 <html lang="pl">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code&family=Open+Sans&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="./css/style.css">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fira+Code&family=Open+Sans&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./css/style.css" />
     <title>Agent helper</title>
-</head>
+  </head>
 
-<body>
+  <body>
     <nav class="nav">
-        <div class="navbox">
-            <a class="active" href="#convert">Convert remittance</a>
-            <a href="#missing">Find missing invoice</a>
-            <a href="#values">Sum invoice values</a>
-            <a href="#overdue">Overdue invoices</a>
-        </div>
+      <div class="navbox">
+        <a class="active" href="#convert">Convert remittance</a>
+        <a href="#missing">Find missing invoice</a>
+        <a href="#values">Sum invoice values</a>
+        <a href="#overdue">Overdue invoices</a>
+      </div>
     </nav>
     <div class="modules">
-        <h1 class="module-title">Agent helper, text manipulation etc.</h1>
-        <div class="module" id="convert">
-            <div class="wrap">
-                <div class="form">
-                    <h3>Paste Remittance Details</h3>
-                    <textarea id="input" spellcheck="false" class="area inputarea"></textarea>
-                </div>
-                <div class="form">
-                    <h3 id="outputlabel">Output</h3>
-                    <textarea readonly id="output" class="area outputarea"></textarea>
-                </div>
-            </div>
-            <button id="submit">Convert ✓</button>
+      <h1 class="module-title">Agent helper, text manipulation etc.</h1>
+      <div class="module" id="convert">
+        <div class="wrap">
+          <div class="form">
+            <h3>Paste Remittance Details</h3>
+            <textarea
+              id="findInvoicesInput"
+              spellcheck="false"
+              class="area inputarea"
+            ></textarea>
+          </div>
+          <div class="form">
+            <h3 id="findInvoicesLabel">Output</h3>
+            <textarea
+              readonly
+              id="findInvoicesOutput"
+              class="area outputarea"
+            ></textarea>
+          </div>
         </div>
-        <div class="module" id="missing">
-            <div class="wrap">
-                <div class="form">
-
-                    <h3>Paste Remittance Details</h3>
-                    <textarea id="input2" class="area2 inputarea"></textarea>
-                    <h3>Paste second</h3>
-                    <textarea id="input3" class="area2 inputarea"></textarea>
-
-                </div>
-                <div class="form">
-                    <h3>Output</h3>
-                    <textarea readonly id="output2" class="area outputarea"></textarea>
-                </div>
-            </div>
-            <button id="submit2">Convert ✓</button>
+        <button id="findInvoicesBtn">Convert ✓</button>
+      </div>
+      <div class="module" id="missing">
+        <div class="wrap">
+          <div class="form">
+            <h3>Paste Remittance Details</h3>
+            <textarea
+              id="findMissingInputOne"
+              class="area2 inputarea"
+            ></textarea>
+            <h3>Paste second</h3>
+            <textarea
+              id="findMissingInputTwo"
+              class="area2 inputarea"
+            ></textarea>
+          </div>
+          <div class="form">
+            <h3>Output</h3>
+            <textarea
+              readonly
+              id="findMissingOutput"
+              class="area outputarea"
+            ></textarea>
+          </div>
         </div>
-        <div class="module" id="values">
-            <div class="wrap">
-                <div class="form">
-                    <h3>Paste Invoice list</h3>
-                    <textarea id="input4" class="area inputarea"></textarea>
-                </div>
-                <div class="form">
-                    <h3 id="sumoutput">Output</h3>
-                    <textarea readonly id="output3" class="area outputarea"></textarea>
-                </div>
-            </div>
-            <button id="submit3">Convert ✓</button>
+        <button id="findMissingBtn">Convert ✓</button>
+      </div>
+      <div class="module" id="values">
+        <div class="wrap">
+          <div class="form">
+            <h3>Paste Invoice list</h3>
+            <textarea id="inputSumInvoices" class="area inputarea"></textarea>
+          </div>
+          <div class="form">
+            <h3 id="sumoutput">Sum |</h3>
+            <textarea
+              readonly
+              id="outputSumInvoices"
+              class="area outputarea"
+            ></textarea>
+          </div>
         </div>
-        <div class="module" id="overdue">
-            <div class="wrap">
-                <div class="form">
-                    <h3>Paste Invoice list</h3>
-
-                    <textarea id="input5" class="area inputarea"></textarea>
-                </div>
-                <div class="form">
-                    <h3 id="">Output</h3>
-                    <textarea readonly id="output4" class="area outputarea"></textarea>
-                </div>
-            </div>
-            <button id="submit4">Convert ✓</button>
+        <button id="btnSumInvoices">Convert ✓</button>
+      </div>
+      <div class="module" id="overdue">
+        <div class="wrap">
+          <div class="form">
+            <h3>Paste Invoice list:</h3>
+            <textarea
+              id="inputOverdueInvoices"
+              class="area inputarea"
+            ></textarea>
+          </div>
+          <div class="form">
+            <h3 id="">Output</h3>
+            <textarea
+              readonly
+              id="outputOverdueInvoices"
+              class="area outputarea"
+            ></textarea>
+          </div>
         </div>
+        <button id="btnOverdueInvoices">Convert ✓</button>
+      </div>
     </div>
     <script src="./js/main.js"></script>
-</body>
-
+  </body>
 </html>
