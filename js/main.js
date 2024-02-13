@@ -22,6 +22,13 @@ const inputOverdueInvoices = document.querySelector("#inputOverdueInvoices");
 const outputOverdueInvoices = document.querySelector("#outputOverdueInvoices");
 const btnOverdueInvoices = document.querySelector("#btnOverdueInvoices");
 
+// Module for generating invoice - amounts list from bex matching
+const inputMatching = document.querySelector("#inputMatching");
+const inputMatchingTwo = document.querySelector("#inputMatchingTwo");
+const outputMatching = document.querySelector("#outputMatching");
+const btnMatching = document.querySelector("#btnMatching");
+const btnMatchingTwo = document.querySelector("#btnMatchingTwo");
+
 // DOM manipulation + scrollspy
 const nav = document.querySelectorAll("a");
 const activePage = window.location.pathname;
@@ -447,10 +454,51 @@ function getOverdue() {
   });
 }
 
+function matchingHandler() {
+  const invoices = [];
+  const ourMatching = [];
+
+  let userInput = inputMatching.value.split("\n");
+  inputMatching.value = "";
+
+  for (let i = 0; i < userInput.length; i++) {
+    if (userInput[i].includes("Invoice")) {
+      invoices.push(userInput[i].replace(/Invoice /g, ""));
+      invoices.push(userInput[i + 1]);
+    }
+  }
+
+  for (let i = 0; i < invoices.length; i += 2) {
+    inputMatching.value += invoices[i] + " " + invoices[i + 1] + "\n";
+    ourMatching.push(invoices[i] + " " + invoices[i + 1]);
+  }
+
+  let checkInput = inputMatchingTwo.value.split("\n");
+
+  inputMatchingTwo.textContent = checkInput;
+}
+
+function checkMatching() {
+  let userInput = inputMatching.value.split("\n");
+  let remittance = inputMatchingTwo.value.split("\n");
+
+  for (let i = 0; i < remittance.length; i++) {
+    remittance[i] = remittance[i].replace(/\t/g, " ");
+  }
+  outputMatching.value = "";
+  remittance.forEach((element) => {
+    if (!userInput.includes(element)) {
+      outputMatching.value += element + " NOT FOUND \n";
+    }
+  });
+}
+
 // Button handlers
 findInvoicesBtn.addEventListener("click", findInvoicesBtnHandler);
 findMissingBtn.addEventListener("click", convertBoth);
 btnSumInvoices.addEventListener("click", sumInvoices);
 btnOverdueInvoices.addEventListener("click", getOverdue);
+btnMatching.addEventListener("click", matchingHandler);
+btnMatchingTwo.addEventListener("click", checkMatching);
 findInvoicesOutput.addEventListener("click", copyToClipboard);
 findMissingOutput.addEventListener("click", copyToClipboardTwo);
