@@ -26,6 +26,7 @@ const btnOverdueInvoices = document.querySelector("#btnOverdueInvoices");
 const inputMatching = document.querySelector("#inputMatching");
 const inputMatchingTwo = document.querySelector("#inputMatchingTwo");
 const outputMatching = document.querySelector("#outputMatching");
+const outputMatchingTwo = document.querySelector("#outputMatchingTwo");
 const btnMatching = document.querySelector("#btnMatching");
 const btnMatchingTwo = document.querySelector("#btnMatchingTwo");
 
@@ -283,7 +284,7 @@ nav.forEach((element) => {
       document.documentElement.scrollTop || document.body.scrollTop;
 
     for (i in sections) {
-      if (sections[i] <= scrollPosition + 100) {
+      if (sections[i] <= scrollPosition + 110) {
         document.querySelector(".active").setAttribute("class", " ");
         document
           .querySelector("a[href*=" + i + "]")
@@ -464,6 +465,12 @@ function matchingHandler() {
   for (let i = 0; i < userInput.length; i++) {
     if (userInput[i].includes("Invoice")) {
       invoices.push(userInput[i].replace(/Invoice /g, ""));
+      userInput[i + 1] = userInput[i + 1].replace(/,/g, "");
+      userInput[i + 1] = userInput[i + 1].substring(
+        0,
+        userInput[i + 1].length - 4
+      );
+
       invoices.push(userInput[i + 1]);
     }
   }
@@ -484,11 +491,19 @@ function checkMatching() {
 
   for (let i = 0; i < remittance.length; i++) {
     remittance[i] = remittance[i].replace(/\t/g, " ");
+    remittance[i] = remittance[i].replace(/,/g, "");
   }
   outputMatching.value = "";
+  outputMatchingTwo.value = "";
+
+  console.log(remittance);
+  console.log(userInput);
+
   remittance.forEach((element) => {
     if (!userInput.includes(element)) {
-      outputMatching.value += element + " NOT FOUND \n";
+      outputMatchingTwo.value += element + "\n";
+    } else {
+      outputMatching.value += element + "\n";
     }
   });
 }
@@ -499,6 +514,7 @@ findMissingBtn.addEventListener("click", convertBoth);
 btnSumInvoices.addEventListener("click", sumInvoices);
 btnOverdueInvoices.addEventListener("click", getOverdue);
 btnMatching.addEventListener("click", matchingHandler);
+// inputMatching.addEventListener("click", matchingHandler);
 btnMatchingTwo.addEventListener("click", checkMatching);
 findInvoicesOutput.addEventListener("click", copyToClipboard);
 findMissingOutput.addEventListener("click", copyToClipboardTwo);
