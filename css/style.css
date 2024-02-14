@@ -20,7 +20,7 @@ body {
 
 .nav {
   z-index: 69;
-  margin-left: 5rem;
+  margin: 0 1vw 0 0;
   position: fixed;
   top: 50%;
   transform: translateY(-50%);
@@ -33,17 +33,17 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-color: rgb(245, 245, 245);
   border-radius: 8px;
   padding: 1rem 2rem;
+  width: 18vw;
 }
 .navbox .active {
   background-color: rgb(63, 84, 181);
   color: rgb(255, 255, 255);
 }
 .navbox a {
-  width: 100%;
-  align-self: last baseline;
+  align-self: first baseline;
+
   padding: 1rem 2rem;
   border-radius: 20px;
   text-decoration: none;
@@ -134,7 +134,7 @@ body {
   font-size: 1.6rem;
 }
 .module .wrap .form .area2 {
-  height: calc(44% + 2px);
+  height: calc(46.5%);
 }
 .module button {
   margin: 10px 10px;
@@ -186,4 +186,4 @@ body {
   100% {
     opacity: 0;
   }
-}/*# sourceMappingURL=style.css.map */
+} /*# sourceMappingURL=style.css.map */
