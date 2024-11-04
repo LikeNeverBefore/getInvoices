@@ -3,6 +3,9 @@ const findInvoicesInput = document.querySelector("#findInvoicesInput");
 const findInvoicesOutput = document.querySelector("#findInvoicesOutput");
 const findInvoicesBtn = document.querySelector("#findInvoicesBtn");
 const findInvoicesLabel = document.querySelector("#findInvoicesLabel");
+const findInvoicesRemitLabel = document.querySelector("#findInvoicesRemitLabel");
+
+
 let duplicateInvoices = 0;
 
 // Module for finding missing invoices (located on different account)
@@ -42,16 +45,86 @@ const activePage = window.location.pathname;
 
 function convertInputToInvoices(input, output) {
   const regex = /\d{10}/; // Regex to only accept numbers that are exactly 10 digits long
+  const regexSap = /\d{9}/; // Regex to only accept numbers that are exactly 10 digits long
+
   const foundNumbers = [];
+  const sapNumbers = [];
   const foundInvoices = [];
 
-  let userInput = input.value.split(" ");
-  userInput = userInput.join();
-  userInput = userInput.split("\n");
-  userInput = userInput.join();
-  userInput = userInput.split("\t");
-  userInput = userInput.join();
-  userInput = userInput.split(",");
+  
+  function removeLeadingZeroes(arr) {
+    return arr.map(item => {
+      if (typeof item === 'string') {
+        // For strings, remove leading zeroes using a regular expression
+        return item.replace(/^0+/, ''); 
+      } else if (typeof item === 'number') {
+        // For numbers, convert to string, remove leading zeroes, then convert back to number
+        return Number(item.toString().replace(/^0+/, '')); 
+      } else {
+        // For other data types, return the item unchanged
+        return item;
+      }
+    });
+  }
+
+  let userInput = input.value;
+  userInput = userInput.replace(/[^a-zA-Z0-9]/g, ' '); 
+  userInput = userInput.split(" ");
+  console.log(userInput)
+  userInput = removeLeadingZeroes(userInput);
+
+  
+
+  // French invoices
+  userInput.forEach((element) => {
+    if (element.includes("GCFRD")) {
+      foundInvoices.push(element);
+    }
+  });
+
+  userInput.forEach((element) => {
+    if (element.includes("GCFRC")) {
+      foundInvoices.push(element);
+    }
+  });
+
+
+  // Italy invoices
+  userInput.forEach((element) => {
+    if (element.includes("GCITD")) {
+      foundInvoices.push(element);
+    }
+  });
+  userInput.forEach((element) => {
+    if (element.includes("GCITC")) {
+      foundInvoices.push(element);
+    }
+  });
+
+  ///////////////////////////////////////////////////////////// HANDLING SAP INVOICES ///////////////////////////////////////////////////////////////////////////
+  
+  // Loop to push 9 digit numbers to sapInvoices
+  userInput.forEach((element) => {
+    if (regexSap.test(element)) {
+      sapNumbers.push(element);
+    }
+  });
+
+  for (let i = 0; i < sapNumbers.length; i++) {
+    sapNumbers[i] = sapNumbers[i].toString().replace(/\D/g, "");
+  }
+
+
+  // Loop to push numbers from range of 100000000 - 200000000 to foundInvoices array
+  for (let i = 0; i < sapNumbers.length; i++) {
+    if (sapNumbers[i] > 100000000 && sapNumbers[i] < 200000000) {
+      foundInvoices.push(sapNumbers[i]);
+    }
+  }
+
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  ///////////////////////////////////////////////////////////// HANDLING B3J INVOICES ///////////////////////////////////////////////////////////////////////////
 
   // Loop to push 10 digit numbers to foundNumbers
   userInput.forEach((element) => {
@@ -60,12 +133,19 @@ function convertInputToInvoices(input, output) {
     }
   });
 
-  // Loop to push numbers from range of 3600000000 - 5100000000 to foundInvoices array
+
   for (let i = 0; i < foundNumbers.length; i++) {
-    if (foundNumbers[i] > 3600000000 && foundNumbers[i] < 5100000000) {
+    foundNumbers[i] = foundNumbers[i].toString().replace(/\D/g, "");
+  }
+
+
+  // Loop to push numbers from range of 3600000000 - 5300000000 to foundInvoices array
+  for (let i = 0; i < foundNumbers.length; i++) {
+    if (foundNumbers[i] > 3600000000 && foundNumbers[i] < 5300000000) {
       foundInvoices.push(foundNumbers[i]);
     }
   }
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   // Creating new Set from foundInvoices to remove duplicates
   const uniqueInvoices = [...new Set(foundInvoices)];
@@ -156,9 +236,15 @@ function convertBoth() {
 // Function that does text manipulation to populate the invoice based on class constructor
 // Then it calculates days past due and sum for each currency code
 function sumInvoices() {
+  let userInput = inputSumInvoices.value.split("\n");
+  if (userInput[userInput.length-1]!=="east"){
+    outputSumInvoices.textContent="";
+    sumOutput.textContent="Error, please check the input"
+    alert("Incorrect input. Please double check to continue");
+  }
+  else{
   const invoices = [];
   const currencySet = new Set([]);
-  let userInput = inputSumInvoices.value.split("\n");
 
   class Invoices {
     constructor(
@@ -180,8 +266,8 @@ function sumInvoices() {
     }
   }
 
-  while (userInput.includes("paid")) {
-    const findPaid = (element) => element === "paid";
+  while (userInput.includes("east")) {
+    const findPaid = (element) => element === "east";
     let indexOfPaid = userInput.findIndex(findPaid);
     let invoiceArray = userInput.splice(0, indexOfPaid + 1);
 
@@ -255,7 +341,7 @@ function sumInvoices() {
     });
     sumOutput.textContent += +currencySum.toFixed(2) + " " + element + " | ";
   });
-}
+}}
 
 // nav handling + scrollspy
 
@@ -268,31 +354,31 @@ nav.forEach((element) => {
   });
 });
 
-(function () {
-  "use strict";
+// (function () {
+//   "use strict";
 
-  var section = document.querySelectorAll(".module");
-  var sections = {};
-  var i = 0;
+//   var section = document.querySelectorAll(".module");
+//   var sections = {};
+//   var i = 0;
 
-  Array.prototype.forEach.call(section, function (e) {
-    sections[e.id] = e.offsetTop;
-  });
+//   Array.prototype.forEach.call(section, function (e) {
+//     sections[e.id] = e.offsetTop;
+//   });
 
-  window.onscroll = function () {
-    var scrollPosition =
-      document.documentElement.scrollTop || document.body.scrollTop;
+//   window.onscroll = function () {
+//     var scrollPosition =
+//       document.documentElement.scrollTop || document.body.scrollTop;
 
-    for (i in sections) {
-      if (sections[i] <= scrollPosition + 110) {
-        document.querySelector(".active").setAttribute("class", " ");
-        document
-          .querySelector("a[href*=" + i + "]")
-          .setAttribute("class", "active");
-      }
-    }
-  };
-})();
+//     for (i in sections) {
+//       if (sections[i] <= scrollPosition + 110) {
+//         document.querySelector(".active").setAttribute("class", " ");
+//         document
+//           .querySelector("a[href*=" + i + "]")
+//           .setAttribute("class", "active");
+//       }
+//     }
+//   };
+// })();
 
 // Function that does text manipulation to populate the invoice based on class constructor
 // Then it calculates days past due obtaining invoice status and dispute status
@@ -301,8 +387,15 @@ nav.forEach((element) => {
 // From overdue array - if the invoice is partially paid the the output says invoiceNumber remains open in the amount of openAmount else it shows invoiceNumber due date dueDate
 
 function getOverdue() {
-  const invoices = [];
   let userInput = inputOverdueInvoices.value.split("\n");
+  if (userInput[userInput.length-1]!=="east"){
+    outputOverdueInvoices.value="";
+    alert("Incorrect input. Please double check to continue");
+  }
+  else{
+
+
+  const invoices = [];
 
   class Invoices {
     constructor(
@@ -328,8 +421,8 @@ function getOverdue() {
     }
   }
 
-  while (userInput.includes("paid")) {
-    const findPaid = (element) => element === "paid";
+  while (userInput.includes("east")) {
+    const findPaid = (element) => element === "east";
     let indexOfPaid = userInput.findIndex(findPaid);
     let invoiceArray = userInput.splice(0, indexOfPaid + 1);
 
@@ -439,9 +532,27 @@ function getOverdue() {
       overdue.push(element);
     }
   });
+  if (overdue.length===1){
+    outputOverdueInvoices.value =
+    "However, please note that in your account there's one overdue invoice ";
+  overdue.forEach((element) => {
+    if (element.openAmount == element.totalAmount) {
+      outputOverdueInvoices.value += `${element.invoiceNumber} with a due date of ${element.dueDate}.\n`;
+    } else {
+      outputOverdueInvoices.value += `${
+        element.invoiceNumber
+      } underpaid in the amount of ${element.openAmount.toFixed(2)} ${
+        element.currency
+      } \n`;
+
+    }
+  });
+  }
+  else{
+
 
   outputOverdueInvoices.value =
-    "However please note that the following invoices in your account are currently overdue: \n";
+    "However, please note that the following invoices in your account are currently overdue: \n";
   overdue.forEach((element) => {
     if (element.openAmount == element.totalAmount) {
       outputOverdueInvoices.value += `${element.invoiceNumber} due date ${element.dueDate}\n`;
@@ -453,8 +564,8 @@ function getOverdue() {
       } \n`;
     }
   });
+}}
 }
-
 function matchingHandler() {
   const invoices = [];
   const ourMatching = [];
@@ -496,8 +607,6 @@ function checkMatching() {
   outputMatching.value = "";
   outputMatchingTwo.value = "";
 
-  console.log(remittance);
-  console.log(userInput);
 
   remittance.forEach((element) => {
     if (!userInput.includes(element)) {
@@ -514,7 +623,6 @@ findMissingBtn.addEventListener("click", convertBoth);
 btnSumInvoices.addEventListener("click", sumInvoices);
 btnOverdueInvoices.addEventListener("click", getOverdue);
 btnMatching.addEventListener("click", matchingHandler);
-// inputMatching.addEventListener("click", matchingHandler);
 btnMatchingTwo.addEventListener("click", checkMatching);
 findInvoicesOutput.addEventListener("click", copyToClipboard);
 findMissingOutput.addEventListener("click", copyToClipboardTwo);
