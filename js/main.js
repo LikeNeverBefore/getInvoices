@@ -389,7 +389,7 @@ nav.forEach((element) => {
 function getOverdue() {
   let userInput = inputOverdueInvoices.value.split("\n");
   if (userInput[userInput.length-1]!=="east"){
-    outputOverdueInvoices.value="";
+    outputOverdueInvoices.textContent="";
     alert("Incorrect input. Please double check to continue");
   }
   else{
@@ -533,13 +533,13 @@ function getOverdue() {
     }
   });
   if (overdue.length===1){
-    outputOverdueInvoices.value =
+    outputOverdueInvoices.textContent =
     "However, please note that in your account there's one overdue invoice ";
   overdue.forEach((element) => {
     if (element.openAmount == element.totalAmount) {
-      outputOverdueInvoices.value += `${element.invoiceNumber} with a due date of ${element.dueDate}.\n`;
+      outputOverdueInvoices.textContent += `${element.invoiceNumber} with a due date of ${element.dueDate}.\n`;
     } else {
-      outputOverdueInvoices.value += `${
+      outputOverdueInvoices.textContent += `${
         element.invoiceNumber
       } underpaid in the amount of ${element.openAmount.toFixed(2)} ${
         element.currency
@@ -551,13 +551,13 @@ function getOverdue() {
   else{
 
 
-  outputOverdueInvoices.value =
+  outputOverdueInvoices.textContent =
     "However, please note that the following invoices in your account are currently overdue: \n";
   overdue.forEach((element) => {
     if (element.openAmount == element.totalAmount) {
-      outputOverdueInvoices.value += `${element.invoiceNumber} due date ${element.dueDate}\n`;
+      outputOverdueInvoices.textContent += `${element.invoiceNumber} due date ${element.dueDate}\n`;
     } else {
-      outputOverdueInvoices.value += `${
+      outputOverdueInvoices.textContent += `${
         element.invoiceNumber
       } underpaid in the amount of ${element.openAmount.toFixed(2)} ${
         element.currency
