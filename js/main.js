@@ -532,6 +532,7 @@ function getOverdue() {
       overdue.push(element);
     }
   });
+const validPop = document.createElement('a');
   if (overdue.length===1){
     outputOverdueInvoices.textContent =
     "However, please note that in your account there's one overdue invoice ";
@@ -549,22 +550,41 @@ function getOverdue() {
   });
   }
   else{
-
+	
 
   outputOverdueInvoices.textContent =
     "However, please note that the following invoices in your account are currently overdue: \n";
   overdue.forEach((element) => {
     if (element.openAmount == element.totalAmount) {
-      outputOverdueInvoices.textContent += `${element.invoiceNumber} due date ${element.dueDate}\n`;
+let ov = document.createElement('li');
+      ov.textContent = `${element.invoiceNumber} due date ${element.dueDate}\n`;
+      outputOverdueInvoices.appendChild(ov);
+
     } else {
-      outputOverdueInvoices.textContent += `${
+let ov = document.createElement('li');
+      ov.textContent += `${
         element.invoiceNumber
       } underpaid in the amount of ${element.openAmount.toFixed(2)} ${
         element.currency
       } \n`;
+outputOverdueInvoices.appendChild(ov);
     }
   });
 }}
+const overdueCr = document.createElement('p');
+const validCr = document.createElement('p');
+
+overdueCr.textContent = `Therefore, we ask for a valid proof of payment which will help you avoid any potential suspension process. Please follow the below definition:`;
+
+validCr.textContent = `A valid proof of payment is either a bank confirmation or a copy of the check (with a tracking number) containing all the necessary details listed `;
+validCr.setAttribute('id', "bold");
+
+const validPop = document.createElement('a');
+validPop.textContent = 'here.'
+validPop.href = 'https://support.google.com/paymentscenter/answer/9034625?visit_id=637254795938999845-52541193&rd=1#proof/';
+outputOverdueInvoices.appendChild(overdueCr);
+outputOverdueInvoices.appendChild(validCr);
+validCr.appendChild(validPop);
 }
 function matchingHandler() {
   const invoices = [];
