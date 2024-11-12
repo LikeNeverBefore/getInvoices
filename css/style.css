@@ -58,7 +58,8 @@ body {
   background-color: gainsboro;
   color: #000;
 }
-
+#bold{
+font-weight: bold;}
 .module {
   position: relative;
   width: 80vw;
