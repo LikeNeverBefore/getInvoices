@@ -483,7 +483,6 @@ function getOverdue() {
 				overdue.push(element);
 			}
 		});
-		const validPop = document.createElement('a');
 		if (overdue.length === 1) {
 			outputOverdueInvoices.textContent = "However, please note that in your account there's one overdue invoice ";
 			overdue.forEach(element => {
@@ -512,32 +511,39 @@ function getOverdue() {
 				}
 			});
 		}
-	}
-	const overdueCr = document.createElement('p');
-	const duringSusCr = document.createElement('p');
-	const validCr = document.createElement('p');
-	const validPop = document.createElement('a');
+		const overdueCr = document.createElement('p');
+		const duringSusCr = document.createElement('p');
+		const validCr = document.createElement('p');
+		const validPop = document.createElement('a');
+		const onceCr = document.createElement('p');
 
-	overdueCr.textContent = `Therefore, we ask for a valid proof of payment which will help you avoid any potential suspension process. Please follow the below definition:`;
-	duringSusCr.textContent = `{If/As} you've been notified that your account is at risk of suspension, please email us a valid proof of payment covering {your overdue invoice / all of your overdue invoices}.`;
-	validCr.textContent = `A valid proof of payment is either a bank confirmation or a copy of the check (with a tracking number) containing all the necessary details listed `;
-	validCr.setAttribute('id', 'bold');
-	validPop.textContent = 'here.';
-	validPop.href =
-		'https://support.google.com/paymentscenter/answer/9034625?visit_id=637254795938999845-52541193&rd=1#proof/';
+		overdueCr.textContent = `Therefore, we ask for a valid proof of payment which will help you avoid any potential suspension process. Please follow the below definition:`;
+		validCr.textContent = `A valid proof of payment is either a bank confirmation or a copy of the check (with a tracking number) containing all the necessary details listed `;
+		validCr.setAttribute('id', 'bold');
+		onceCr.textContent = `Once we receive`;
+		validPop.textContent = 'here.';
+		validPop.href =
+			'https://support.google.com/paymentscenter/answer/9034625?visit_id=637254795938999845-52541193&rd=1#proof/';
 
-	if (document.getElementById('overdueRadio').checked) {
-		outputOverdueInvoices.appendChild(overdueCr);
-		outputOverdueInvoices.appendChild(validCr);
-		validCr.appendChild(validPop);
-	} else {
-		if (overdue.length === 1){
-		duringSusCr.textContent = `{If/As} you've been notified that your account is at risk of suspension, please email us a valid proof of payment covering your overdue invoice.`;}
-else {
-duringSusCr.textContent = `{If/As} you've been notified that your account is at risk of suspension, please email us a valid proof of payment covering all of your overdue invoices.`;
-		outputOverdueInvoices.appendChild(duringSusCr);
-		outputOverdueInvoices.appendChild(validCr);
-		validCr.appendChild(validPop);
+		if (document.getElementById('overdueRadio').checked) {
+			outputOverdueInvoices.appendChild(overdueCr);
+			outputOverdueInvoices.appendChild(validCr);
+			validCr.appendChild(validPop);
+		} else {
+			if (overdue.length === 1) {
+				duringSusCr.textContent = `{If/As} you've been notified that your account is at risk of suspension, please email us a valid proof of payment covering your overdue invoice.`;
+				outputOverdueInvoices.appendChild(duringSusCr);
+				outputOverdueInvoices.appendChild(validCr);
+				validCr.appendChild(validPop);
+				outputOverdueInvoices.appendChild(onceCr);
+			} else {
+				duringSusCr.textContent = `{If/As} you've been notified that your account is at risk of suspension, please email us a valid proof of payment covering all of your overdue invoices.`;
+				outputOverdueInvoices.appendChild(duringSusCr);
+				outputOverdueInvoices.appendChild(validCr);
+				validCr.appendChild(validPop);
+				outputOverdueInvoices.appendChild(onceCr);
+			}
+		}
 	}
 }
 function matchingHandler() {
