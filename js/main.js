@@ -519,7 +519,7 @@ function getOverdue() {
 	const validPop = document.createElement('a');
 
 	overdueCr.textContent = `Therefore, we ask for a valid proof of payment which will help you avoid any potential suspension process. Please follow the below definition:`;
-	duringSusCr.textContent = `ju under suspension lol:`;
+	duringSusCr.textContent = `{If/As} you've been notified that your account is at risk of suspension, please email us a valid proof of payment covering {your overdue invoice / all of your overdue invoices}.`;
 	validCr.textContent = `A valid proof of payment is either a bank confirmation or a copy of the check (with a tracking number) containing all the necessary details listed `;
 	validCr.setAttribute('id', 'bold');
 	validPop.textContent = 'here.';
@@ -531,6 +531,10 @@ function getOverdue() {
 		outputOverdueInvoices.appendChild(validCr);
 		validCr.appendChild(validPop);
 	} else {
+		if (overdue.length === 1){
+		duringSusCr.textContent = `{If/As} you've been notified that your account is at risk of suspension, please email us a valid proof of payment covering your overdue invoice.`;}
+else {
+duringSusCr.textContent = `{If/As} you've been notified that your account is at risk of suspension, please email us a valid proof of payment covering all of your overdue invoices.`;
 		outputOverdueInvoices.appendChild(duringSusCr);
 		outputOverdueInvoices.appendChild(validCr);
 		validCr.appendChild(validPop);
